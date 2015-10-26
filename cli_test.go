@@ -1,49 +1,51 @@
 package cli_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 	
-	"github.com/michaebeam/cli"
+	"github.com/michaelbeam/cli"
 )
 
 func TestCli(t *testing.T) {
-	args := {"say", "hello", "michael"}
+	args1 := []string{"say", "hello", "Michael"}
+	args2 := []string{"goodbye"}
+	args3 := []string{}
+	args4 := []string{"giberish", "asdf"}
+	args5 := []string{"say", "giberish", "asdf"}
 
 	c := cli.New()
-	c.Handle("say", say)
-	c.Handle("goodbye", goodbye)
+	c.HelpMsg = "command say hello|goodbye [name] | command goodbye [name]"
+	c.HandleFunc("say", say, "say hello|goodbye [name]")
+	c.HandleFunc("goodbye", goodbye, "goodbye [name]")
+	c.HandleDefaultFunc(hello)
+	c.Execute(args1)
+	c.Execute(args2)
+	c.Execute(args3)
+	c.Execute(args4)
+	c.Execute(args5)
+}
+
+func say(args []string) {
+	c := cli.New()
+	c.HelpMsg = "say hello|goodbye [name]"
+	c.HandleFunc("hello", hello, "hello [name]")
+	c.HandleFunc("goodbye", goodbye, "goodbye [name]")
+	c.HandleDefaultFunc(hello)
 	c.Execute(args)
 }
 
-var say := cli.NewCmd()
-say.HelpMsg = "say hello|goodbye [name]"
-say.ExecFunc = func(args []string) {
-	if args == nil {
-		fmt.Println(say.Help())
-		return
-	}
-
-	c := cli.New()
-	c.Handle("hello", hello)
-	c.Handle("goodbye", goodbye)
-	c.HandleDefault(hello)
-	c.Execute(args)
-}
-
-var hello := cli.NewCmd()
-hello.HelpMsg = "hello [name]"
-hello.ExecFunc = func(args []string) {
-	if args == nil {
+func hello(args []string) {
+	if len(args) < 1 {
 		args = append(args, "World")
 	}
-	fmt.Println("Hello", args, "!")
+	fmt.Printf("Hello %s!\n", strings.Join(args, " "))
 }
 
-var goodbye := cli.NewCmd()
-goodbye.HelpMsg = "goodbye [Name]"
-goodbye.ExecFunc = func(args []string) {
-	if args == nil {
+func goodbye(args []string) {
+	if len(args) < 1 {
 		args = append(args, "Everybody")
 	}
-	fmt.Println("Goodbye", args, "!")
+	fmt.Printf("Goodbye %s!\n", strings.Join(args, " "))
 }
