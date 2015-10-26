@@ -17,8 +17,8 @@ func TestCli(t *testing.T) {
 
 	c := cli.New()
 	c.HelpMsg = "command say hello|goodbye [name] | command goodbye [name]"
-	c.HandleFunc("say", say, "say hello|goodbye [name]")
-	c.HandleFunc("goodbye", goodbye, "goodbye [name]")
+	c.HandleFunc("say", say)
+	c.HandleFunc("goodbye", goodbye)
 	c.HandleDefaultFunc(hello)
 	c.Execute(args1)
 	c.Execute(args2)
@@ -30,8 +30,8 @@ func TestCli(t *testing.T) {
 func say(args []string) {
 	c := cli.New()
 	c.HelpMsg = "say hello|goodbye [name]"
-	c.HandleFunc("hello", hello, "hello [name]")
-	c.HandleFunc("goodbye", goodbye, "goodbye [name]")
+	c.HandleFunc("hello", hello)
+	c.HandleFunc("goodbye", goodbye)
 	c.HandleDefaultFunc(hello)
 	c.Execute(args)
 }

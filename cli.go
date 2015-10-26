@@ -32,7 +32,6 @@ import (
 // Objects implementing the Command interface can be registered to handle paticular sub-commands in a cli.
 type Command interface {
 	Execute([]string)
-	Help() string
 }
 
 type Cli struct {
@@ -42,7 +41,7 @@ type Cli struct {
 }
 
 func New() *Cli {
-	return &Cli{commands: make(map[string]Command) }
+	return &Cli{commands: make(map[string]Command)}
 }
 
 func (c *Cli) Execute(args []string) {
@@ -55,7 +54,7 @@ func (c *Cli) Execute(args []string) {
 	} else if cmd, ok := c.commands[args[0]]; ok {
 		cmd.Execute(args[1:])
 	} else {
-		fmt.Println(c.Help())
+		fmt.Println(c.HelpMsg)
 	}
 }
 
@@ -67,37 +66,20 @@ func (c *Cli) HandleDefault(handler Command) {
 	c.defaultCmd = handler
 }
 
-func (c *Cli) HandleDefaultFunc(handler func(args []string)) {
-	a := new(Cmd)
-	a.ExecFunc = handler
-	a.HelpMsg = c.Help()
-	c.defaultCmd = a
+func (c *Cli) HandleDefaultFunc(handler cmdFunc) {
+	c.defaultCmd = handler
 }
 
-func (c *Cli) HandleFunc(cmd string, handler func(args []string), help string) {
-	a := new(Cmd)
-	a.ExecFunc = handler
-	a.HelpMsg = help
-	c.commands[cmd] = a
+func (c *Cli) HandleFunc(cmd string, handler cmdFunc) {
+	c.commands[cmd] = handler
 }
 
 func (c *Cli) Help() string {
 	return c.HelpMsg
 }
 
-type Cmd struct {
-	ExecFunc func([]string)
-	HelpMsg string
-}
+type cmdFunc func([]string)
 
-func NewCmd() *Cmd {
-	return new(Cmd)
-}
-
-func (c *Cmd) Execute(args []string) {
-	c.ExecFunc(args)
-}
-
-func (c *Cmd) Help() string {
-	return c.HelpMsg
+func (c cmdFunc) Execute(args []string) {
+	c(args)
 }
