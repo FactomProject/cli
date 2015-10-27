@@ -12,6 +12,7 @@ Package cli provides basic tools for creating hireactical command line interface
 	c.HelpMsg = "cmd start|stop"
 	c.HandleFunc("start", start)
 	c.HandleFunc("stop", stop)
+	c.HandleDefault(start)
 	c.Execute(flag.Args())
 	
 	func start(args []string) {
@@ -77,7 +78,7 @@ func (c *Cli) HandleDefault(handler Command) {
 	c.defaultCmd = handler
 }
 
-// HandleDefault registers a function to handle the default command to be
+// HandleDefaultFunc registers a function to handle the default command to be
 // executed if no arguments are given.
 func (c *Cli) HandleDefaultFunc(handler cmdFunc) {
 	c.defaultCmd = handler
