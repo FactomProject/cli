@@ -59,10 +59,14 @@ func (c *Cli) Execute(args []string) {
 		} else {
 			fmt.Println(c.HelpMsg)
 		}
-	} else if cmd, ok := c.commands[args[0]]; ok {
-		cmd.Execute(args[1:])
+	} else if cmd, ok := c.commands[args[0]]; !ok {
+		if c.defaultCmd != nil {
+			c.defaultCmd.Execute(args)
+		} else if m := c.HelpMsg; m != "" {
+			fmt.Println(m)
+		}
 	} else {
-		fmt.Println(c.HelpMsg)
+		cmd.Execute(args)
 	}
 }
 
