@@ -7,18 +7,18 @@ Package cli provides basic tools for creating hireactical command line interface
 
 	// ...
 	flag.Parse()
-	
+
 	c := cli.New()
 	c.HelpMsg = "cmd start|stop"
 	c.HandleFunc("start", start)
 	c.HandleFunc("stop", stop)
 	c.HandleDefault(start)
 	c.Execute(flag.Args())
-	
+
 	func start(args []string) {
 		// Start the server
 	}
-	
+
 	func stop(args []string) {
 		// Stop the server
 	}
@@ -39,9 +39,9 @@ type Command interface {
 // Cli is a command interface. It executes the subcommand from its arguments
 // list or a default command.
 type Cli struct {
-	commands map[string]Command
+	commands   map[string]Command
 	defaultCmd Command
-	HelpMsg string
+	HelpMsg    string
 }
 
 // New Creates a new Cli to be used to handle a set of sub-commands.
