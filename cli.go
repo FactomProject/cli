@@ -31,7 +31,7 @@ import (
 )
 
 // Objects implementing the Command interface can be registered to handle
-// paticular sub-commands in a cli.
+// particular sub-commands in a cli.
 type Command interface {
 	Execute([]string)
 }
